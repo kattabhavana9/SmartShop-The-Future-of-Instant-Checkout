@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="l.css" />
+  <style>
+    .error-message {
+      color: red;
+      font-size: 12px;
+      margin-top: -10px;
+      margin-bottom: 10px;
+      display: none;
+    }
+    input.invalid {
+      border-color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <h2>Sign Up</h2>
+    <form id="signupForm">
+      <input type="text" id="name" placeholder="Name" required />
+      <div id="nameError" class="error-message">Name cannot contain spaces or special characters</div>
+      
+      <input type="email" id="email" placeholder="Email" required />
+      <div id="emailError" class="error-message">Please enter a valid email address (e.g., example@gmail.com)</div>
+      
+      <input type="password" id="password" placeholder="Password" required />
+      <div id="passwordError" class="error-message">Password must be at least 6 characters long</div>
+      
+      <button type="submit">Sign Up</button>
+    </form>
+    <p>Already have an account? <a href="login.html">Login</a></p>
+  </div>
+
+  <script>
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Get form values
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      
+      // Reset error states
+      document.getElementById('nameError').style.display = 'none';
+      document.getElementById('emailError').style.display = 'none';
+      document.getElementById('passwordError').style.display = 'none';
+      document.getElementById('name').classList.remove('invalid');
+      document.getElementById('email').classList.remove('invalid');
+      document.getElementById('password').classList.remove('invalid');
+      
+      // Validate name (no spaces, only letters)
+      const nameRegex = /^[a-zA-Z]+$/;
+      if (!nameRegex.test(name)) {
+        document.getElementById('nameError').style.display = 'block';
+        document.getElementById('name').classList.add('invalid');
+        return;
+      }
+      
+      // Validate email (must end with @gmail.com)
+      const emailRegex = /^[a-zA-Z0-9._-]+@gmail\.com$/;
+      if (!emailRegex.test(email)) {
+        document.getElementById('emailError').style.display = 'block';
+        document.getElementById('email').classList.add('invalid');
+        return;
+      }
+      
+      // Validate password (minimum 6 characters)
+      if (password.length < 6) {
+        document.getElementById('passwordError').style.display = 'block';
+        document.getElementById('password').classList.add('invalid');
+        return;
+      }
+      
+      // Check if user already exists
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+      if (users.find(u => u.email === email)) {
+        alert('User already exists!');
+        return;
+      }
+      
+      // Store user data
+      users.push({ name, email, password });
+      localStorage.setItem('users', JSON.stringify(users));
+      alert('Signup successful! Please login.');
+      window.location.href = 'login.html';
+    });
+
+    // Add real-time validation
+    document.getElementById('name').addEventListener('input', function() {
+      const nameRegex = /^[a-zA-Z]+$/;
+      if (!nameRegex.test(this.value.trim())) {
+        document.getElementById('nameError').style.display = 'block';
+        this.classList.add('invalid');
+      } else {
+        document.getElementById('nameError').style.display = 'none';
+        this.classList.remove('invalid');
+      }
+    });
+
+    document.getElementById('email').addEventListener('input', function() {
+      const emailRegex = /^[a-zA-Z0-9._-]+@gmail\.com$/;
+      if (!emailRegex.test(this.value.trim())) {
+        document.getElementById('emailError').style.display = 'block';
+        this.classList.add('invalid');
+      } else {
+        document.getElementById('emailError').style.display = 'none';
+        this.classList.remove('invalid');
+      }
+    });
+
+    document.getElementById('password').addEventListener('input', function() {
+      if (this.value.length < 6) {
+        document.getElementById('passwordError').style.display = 'block';
+        this.classList.add('invalid');
+      } else {
+        document.getElementById('passwordError').style.display = 'none';
+        this.classList.remove('invalid');
+      }
+    });
+  </script>
+</body>
+</html>
