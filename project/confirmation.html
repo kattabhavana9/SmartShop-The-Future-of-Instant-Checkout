@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Payment Confirmation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    .qr-code {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Thank You!</h1>
+    <p>Your payment was successful.</p>
+    <p id="transactionId"></p>
+    
+    <div class="qr-code">
+      <p>Show this QR code at the exit:</p>
+      <img id="qrImage" src="" alt="QR Code" />
+    </div>
+  </div>
+
+  <script>
+    // Get paymentId from URL
+    const params = new URLSearchParams(window.location.search);
+    const paymentId = params.get("paymentId");
+
+    // Display payment ID
+    document.getElementById("transactionId").innerText = `Transaction ID: ${paymentId}`;
+
+    // Generate QR code using payment ID
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(paymentId)}&size=150x150`;
+    document.getElementById("qrImage").src = qrUrl;
+  </script>
+</body>
+</html>
+
